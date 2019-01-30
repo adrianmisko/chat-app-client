@@ -44,12 +44,13 @@ const parseWsMessage = data => {
 
 
 export default {
+  namespace: 'global',
   state: {
     webSocket: null,
     openWindows: [],
   },
   reducers: {
-    addNewWindow(state) {
+    newWindow(state) {
       return {
         ...state, openWindows: [...state.openWindows, {
           IP: '?:?:?:?',
@@ -115,6 +116,12 @@ export default {
     }
   },
   effects: {
+  	* addNewWindow(action, { call, put, select }) {
+  	  const windows = yield select(({ global }) => global.openWindows);
+  	  const window = windows.filter(window => window.IP === '?:?:?:?')[0];
+  	  if (!window)
+  		yield put({ type: 'newWindow' });
+  	},
     * send(action, { call, put, select }) {
       const ws = yield select(({ global }) => global.webSocket);
       const openWindows = yield select(({ global }) => global.openWindows);
@@ -167,7 +174,7 @@ export default {
               });
             }
           } else if (event.type === 'error') {
-            yield call(message.error, 'Cannot connect to WebSocket server');
+            yield call(message.error, 'Cannot connect to WebSocket server', 10);
           }
         } catch (err) {
           console.error('socket error:', err);
@@ -175,9 +182,13 @@ export default {
         }
       }
     },
-    * addNewConnection(action, { call, put }) {
-      yield put({ type: 'updateIP', payload: action.payload });
-      yield put({ type: 'clearMessages', payload: action.payload.ip });
+    * addNewConnection(action, { call, put, select }) {
+      const windows = yield select(({ global }) => global.openWindows);
+      const window = windows.filter(window => action.payload.IP === window.IP)[0];
+      if (!window) {
+	    yield put({ type: 'updateIP', payload: action.payload });
+	    yield put({ type: 'clearMessages', payload: action.payload.IP });
+      }
     },
   },
   subscriptions: {
