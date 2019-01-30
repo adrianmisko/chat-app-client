@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "start": "umi dev",
+    "start": "nodejs server.js",
     "build": "umi build",
     "test": "umi test",
     "lint": "eslint --ext .js src mock tests",
@@ -16,6 +16,9 @@
     "crypto-js": "^3.1.9-1",
     "dva": "^2.5.0-beta.2",
     "eslint": "^5.12.1",
+    "express": "^4.16.4",
+    "express-favicon": "^2.0.1",
+    "path": "^0.12.7",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-rnd": "^9.0.4",
