@@ -46,10 +46,16 @@ const parseWsMessage = data => {
 export default {
   namespace: 'global',
   state: {
+    serverInfoTextArea: '',
+    visible: false,
+    wsUrl: '',
     webSocket: null,
     openWindows: [],
   },
   reducers: {
+    toggleVisible(state) {
+      return { ...state, visible: !state.visible }
+    },
     newWindow(state) {
       return {
         ...state, openWindows: [...state.openWindows, {
@@ -113,9 +119,16 @@ export default {
       return { ...state, openWindows: [...state.openWindows.slice(0, updatedWindowIdx),
           updatedWindow, ...state.openWindows.slice(updatedWindowIdx + 1, state.openWindows.length)]
       };
+    },
+    updateWsUrl(state, { payload: wsUrl }) {
+      return { ...state, wsUrl }
     }
   },
   effects: {
+    * updateServerInfo(action, { call, put }) {
+      yield put({ type: 'updateWsUrl', payload: action.payload });
+      yield put({ type: 'connectToWsServer' });
+    },
   	* addNewWindow(action, { call, put, select }) {
   	  const windows = yield select(({ global }) => global.openWindows);
   	  const window = windows.filter(window => window.IP === '?:?:?:?')[0];
@@ -124,6 +137,9 @@ export default {
   	},
     * send(action, { call, put, select }) {
       const ws = yield select(({ global }) => global.webSocket);
+      if (!ws) {
+        yield call(message.info, 'You aren\'t connected to server', 2);
+      }
       const openWindows = yield select(({ global }) => global.openWindows);
       const window = openWindows.filter(item => item.IP === action.payload)[0];
       const textAreaValue = window.textAreaValue;
@@ -142,7 +158,8 @@ export default {
       yield call(send, textAreaValue, target, ws);
     },
     * connectToWsServer(action, { call, put, select }) {
-      const ws = new WebSocket('ws://192.168.0.20:8080/chat');
+  	  const wsUrl = yield select(({ global }) => global.wsUrl);
+      const ws = new WebSocket(`ws://${wsUrl}/chat`);
       const socketChannel = yield createSocketChannel(ws);
       yield put({ type: 'addWebSocket', payload: ws });
       while (true) {            // :o
@@ -191,15 +208,5 @@ export default {
       }
     },
   },
-  subscriptions: {
-    onPageLoad({ dispatch, history }) {
-      return history.listen(({ pathname }) => {
-        if (pathname === '/') {
-          dispatch({
-            type: 'connectToWsServer',
-          });
-        }
-      });
-    },
-  },
+  subscriptions: { },
 };

@@ -2,12 +2,15 @@ import React from 'react';
 import ChatBox from './../components/ChatBox';
 import { connect } from 'dva';
 import NewChatButton from './../components/NewChatButton';
+import NewConnectionButton from '@/components/NewConnectionButton';
+import ConnectToServer from '@/components/ConnectToServer';
 
 const Index =
-  ({ openWindows, addNewWindow, closeWindow, updateTextField, send, connect }) => {
+  ({ openWindows, addNewWindow, closeWindow, updateTextField, send, connect, toggleVisible, visible }) => {
 
   return (
     <div>
+      <ConnectToServer visible={visible} toggleVisible={toggleVisible}/>
       {openWindows.map(window =>
         <ChatBox
           IP={window.IP}
@@ -19,7 +22,8 @@ const Index =
           connect={connect}
         />
         )}
-      <NewChatButton addNewWindow={addNewWindow}/>
+        <NewConnectionButton toggleVisible={toggleVisible}/>
+        <NewChatButton addNewWindow={addNewWindow}/>
     </div>
   );
 };
@@ -32,5 +36,6 @@ export default connect(
     updateTextField: ({key, value}) => dispatch({ type: 'global/updateTextField', payload: { key, value } }),
     send: key => dispatch({ type: 'global/send', payload: key }),
     connect: ({key, IP}) => dispatch({ type: 'global/addNewConnection', payload: {key, IP} }),
+    toggleVisible: () => dispatch({ type: 'global/toggleVisible' })
   })
 )(Index);
