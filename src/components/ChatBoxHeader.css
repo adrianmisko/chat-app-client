@@ -1,0 +1,32 @@
+.avatar {
+  margin: 5px;
+}
+
+.container {
+  transform: translate(0, 55%);
+  background-color: aliceblue;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid gray;
+}
+
+.exit-button {
+  margin: 2px;
+  width: 32px;
+  background-color: rgba(1,1,1,0);
+  border-color: rgba(1,1,1,0);
+}
+
+.icon {
+  transform: translate(0px, -1px);
+}
+
+.title-wrapper {
+  position: relative;
+}
+
+.title {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}

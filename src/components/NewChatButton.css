@@ -1,0 +1,11 @@
+.newChatButton {
+  position: absolute;
+  z-index: 999;
+  right: 0;
+  bottom: -100vh;
+  margin: 3em;
+}
+
+.container {
+  position: relative;
+}

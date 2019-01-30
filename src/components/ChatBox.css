@@ -1,0 +1,8 @@
+.chat-box {
+  display: grid;
+  grid-template-rows: 50px minmax(50px, 1fr) 50px;
+  min-width: 250px;
+  min-height: 250px;
+  height: 100%;
+  width: 100%;
+}
