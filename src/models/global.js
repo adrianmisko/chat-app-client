@@ -13,7 +13,10 @@ function createSocketChannel(socket) {
   return eventChannel(emit => {
 
     const messageHandler = event => {
-      console.log('Message is:', event.data.split('\n')[1]);
+      if (event.data.slice(0, 3) === 'NOT')
+        console.log('NOT_CONNECTED')
+      else
+        console.log('Message is:', event.data.split('\n')[1]);
       emit(event);
     };
 
