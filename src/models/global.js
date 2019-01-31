@@ -3,8 +3,7 @@ import { eventChannel } from 'redux-saga';
 import { message } from 'antd';
 
 const send = (msg, IP, ws) => {
-  const enframedMsg = `SEND_TO ${IP}
-  ${msg}`;
+  const enframedMsg = `SEND_TO ${IP}\n${msg}`;
   ws.send(enframedMsg);
 };
 
