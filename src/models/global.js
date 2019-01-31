@@ -13,6 +13,7 @@ function createSocketChannel(socket) {
   return eventChannel(emit => {
 
     const messageHandler = event => {
+      console.log('Message is:', event.data.split('\n')[1]);
       emit(event);
     };
 
